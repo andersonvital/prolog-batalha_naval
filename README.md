@@ -12,7 +12,7 @@ destruído, cabe ao mesmo verificar isso realizando tiros nos extremos de onde e
 estar posicionado o navio. O jogador vence caso o consiga destruir todos os navios antes
 do fim da sua munição.
 
-                                                                                                   
+                                                                                                    
                                                                                                    
                                 (@&#*,.,/%@                                                        
                             ,*             &                                                       
@@ -39,4 +39,8 @@ do fim da sua munição.
               @@                                                           %                       
            ,#@@&/@.                      ,(&@@@@@@@@@@@@@@@@%/,.    .*#@%        .,*(%@@,          
     *&@@@#.        .@(          /&@@@&/,                   ,/#&@@@@@@@@@@@@@@@@@@%/                
-
+.,.             .,,/(#%%&%(,                                                                       
+                                            
+                                                            
+                                                                                                   
+                                                                                                   
