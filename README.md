@@ -1,6 +1,6 @@
 Projeto de implementação do jogo Batalha Naval para a disciplina PARADIGMAS DE LÓGICA DE PROGRAMAÇÃO - 2017.1 (UFCG).
 
-Especificaçoes:
+Especificações:
 
 O jogador tem como objetivo destruir todos os navios presentes no tabuleiro com um
 número finito de torpedos. O jogador recebe um tabuleiro que esconde 7 navios inimigos.
