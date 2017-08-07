@@ -1,4 +1,4 @@
-Projeto de implementação do jogo Batalha Naval para a disciplina PARADIGMAS DE LÓGICA DE PROGRAMAÇÃO - 2017.1 (UFCG).
+Projeto de implementação do jogo Batalha Naval utilizando a linguagem Prolog para a disciplina PARADIGMAS DE LÓGICA DE PROGRAMAÇÃO - 2017.1 (UFCG).
 
 Especificações:
 
