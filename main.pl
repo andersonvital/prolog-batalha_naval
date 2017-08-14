@@ -1,35 +1,13 @@
 
-  tabuleiroInicial(
-  [[~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~],
-   [~,~,~,~,~,~,~,~,~]] ).
-
-   tabuleiroExemplo(
-   [[~,~,n,n,n,n,~,~,~],
-    [~,~,n,n,~,~,~,~,~],
-    [~,~,~,~,~,n,~,~,~],
-    [~,~,~,~,~,n,~,~,~],
-    [~,~,~,~,~,~,~,~,~],
-    [~,~,~,~,~,n,~,~,~],
-    [~,~,n,~,~,~,n,~,~],
-    [~,~,~,~,~,~,~,~,~],
-    [~,~,~,~,~,~,~,~,n]] ).
-
 /* Regras para realizar tiros, manipulando o tabuleiro */
 atirar(Tabuleiro, Linha, Coluna, NovoTabuleiro) :-
-  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
-  (
-  (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro);
-  (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro);
-  (Simbolo == @) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.");
-  (Simbolo == x) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.")
-  ).
+ encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
+ (
+ (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, 'e', NovoTabuleiro);
+ (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro);
+ (Simbolo == e) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.");
+ (Simbolo == x) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.")
+ ).
 
 encontraSimboloNaMatriz(Matriz, Linha, Coluna, Simbolo) :-
   nth0(Linha, Matriz, ListaDaPos),
@@ -43,38 +21,46 @@ alteraValorNoTabuleiro([H|T], 0, Coluna, NovoValor, [J|T]) :- substituir(H, Colu
 alteraValorNoTabuleiro([H|T], Linha, Coluna, NovoValor, [H|U]) :-
   Linha1 is Linha - 1, alteraValorNoTabuleiro(T, Linha1, Coluna, NovoValor, U).
 
+/* EXIBIÇÃO */
 
-/* Regras para exibição do tabuleiro na tela */
+/* Impressão do tabuleiro exibindo os navios inimigos */
 
 imprimeTabuleiroReal(Tabuleiro) :-
-  write('Esse é o tabuleiro real (com os navios inimigos expostos):'),nl,nl,
-  write('   0  1  2  3  4  5  6  7  8'),nl,nl,
-  imprimeMatriz(Tabuleiro, 0).
+  write('~°~°  TABULEIRO REAL °~°~'),nl,nl,
+  write('   0   1   2   3   4   5   6   7   8'),nl,nl,
+  imprimeLinhas(Tabuleiro, 0).
 
-imprimeMatriz([], _).
-imprimeMatriz([H|T], Index) :-
+imprimeLinhas([], _).
+imprimeLinhas([H|T], Index) :-
   write(Index), write('  '), imprimeLinha(H), nl,nl,
   NewIndex is Index+1,
-  imprimeMatriz(T, NewIndex).
+  imprimeLinhas(T, NewIndex).
 
 imprimeLinha([]).
 imprimeLinha([H|T]) :-
-  write(H), write('  '),
+  write(H), write('   '),
   imprimeLinha(T).
 
+  /* Impressão da exibição que o jogador tem do tabuleiro, omitindo navios */
+imprimeTabuleiroJogador(Tabuleiro) :-
+  write('   0   1   2   3   4   5   6   7   8'),nl,nl,
+  imprimeMatrizJogador(Tabuleiro, 0).
+
+imprimeMatrizJogador([], _).
+imprimeMatrizJogador([H|T], Index) :-
+    write(Index), write('   '), imprimeLinhaJogador(H), nl,nl,
+    NewIndex is Index+1,
+    imprimeMatrizJogador(T, NewIndex).
+
+imprimeLinhaJogador([]).
+imprimeLinhaJogador([H|T]) :-
+  (H == '~', write('~');
+  H == n, write('~');
+  H == e, write('@');
+  H == x, write('x')),
+  imprimeLinhaJogador(T).
+
 /* - - - - - - - - - - - - - - - - - - - - - - -  */
-
-linhaAux(X, Row) :-
-  board(Board),
-  nth0(X, Board, Row).
-
-colunaAux(Y, Row, Cell) :-
-  nth0(Y, Row, Cell).
-
-posNavio(X, Y) :-
-  linhaAux(X, Row),
-  colunaAux(Y, Row, Cell),
-  Cell = 1.
 
 acertar:-
     write('ACERTOU!'), nl.
@@ -87,11 +73,6 @@ miss :-
     acertar, atualizaTabuleiro(X,Y);
     miss). */
 
-/*funcao pra atualizar o novo tabuleiro
-  */
-
-/*atualizaTabuleiro(TabuleiroVisto,TabuleiroComNavios PosX, PosY, NovoTabuleiroVisto).*/
-
 prompt_number(Prompt, Number) :-
   write(Prompt),
   write(': '),
@@ -99,7 +80,6 @@ prompt_number(Prompt, Number) :-
 
 /*:- initialization(main).
 main :-
-
   repeat,
   tabuleiroInicial(TABULEIRO),
   imprimeTabuleiroReal(TABULEIRO),
