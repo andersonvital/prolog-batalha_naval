@@ -3,9 +3,9 @@
 atirar(Tabuleiro, Linha, Coluna, NovoTabuleiro) :-
  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
  (
- (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, 'e', NovoTabuleiro);
+ (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro);
  (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro);
- (Simbolo == e) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.");
+ (Simbolo == @) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.");
  (Simbolo == x) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.")
  ).
 
@@ -26,7 +26,7 @@ alteraValorNoTabuleiro([H|T], Linha, Coluna, NovoValor, [H|U]) :-
 /* Impressão do tabuleiro exibindo os navios inimigos */
 
 imprimeTabuleiroReal(Tabuleiro) :-
-  write('~°~°  TABULEIRO REAL °~°~'),nl,nl,
+  write('~°~°~°~°  TABULEIRO REAL ~°~°°~°~'),nl,nl,
   write('   0   1   2   3   4   5   6   7   8'),nl,nl,
   imprimeLinhas(Tabuleiro, 0).
 
@@ -43,12 +43,13 @@ imprimeLinha([H|T]) :-
 
   /* Impressão da exibição que o jogador tem do tabuleiro, omitindo navios */
 imprimeTabuleiroJogador(Tabuleiro) :-
+  write('~°~°~°~°~°~°  TABULEIRO ~°~°~°~°~°~°'),nl,nl,
   write('   0   1   2   3   4   5   6   7   8'),nl,nl,
   imprimeMatrizJogador(Tabuleiro, 0).
 
 imprimeMatrizJogador([], _).
 imprimeMatrizJogador([H|T], Index) :-
-    write(Index), write('   '), imprimeLinhaJogador(H), nl,nl,
+    write(Index), write('  '), imprimeLinhaJogador(H), nl,nl,
     NewIndex is Index+1,
     imprimeMatrizJogador(T, NewIndex).
 
@@ -56,8 +57,8 @@ imprimeLinhaJogador([]).
 imprimeLinhaJogador([H|T]) :-
   (H == '~', write('~');
   H == n, write('~');
-  H == e, write('@');
-  H == x, write('x')),
+  H == @, write('@');
+  H == x, write('x')), write('   '),
   imprimeLinhaJogador(T).
 
 /* - - - - - - - - - - - - - - - - - - - - - - -  */
