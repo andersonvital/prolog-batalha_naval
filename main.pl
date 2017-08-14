@@ -1,27 +1,51 @@
 
-  tabuleiroInicial( [['~','~','~','~','~','~','~','~','~'], ['~','~','~','~','~','~','~','~','~'],
-   ['~','~','~','~','~','~','~','~','~'],['~','~','~','~','~','~','~','~','~'],
-   ['~','~','~','~','~','~','~','~','~'], ['~','~','~','~','~','~','~','~','~'],
-   ['~','~','~','~','~','~','~','~','~'], ['~','~','~','~','~','~','~','~','~'],
-   ['~','~','~','~','~','~','~','~','~']] ).
+  tabuleiroInicial(
+  [[~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~],
+   [~,~,~,~,~,~,~,~,~]] ).
 
-tiro(Tabuleiro, Linha, Coluna, NovoTabuleiro) :-
-  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo).
-  /*(Simbolo =:= '~' -> alteraValor(Tabuleiro, Linha, Coluna, '#', NovoTabuleiro);
-   Simbolo =:= 'N' -> alteraValor(Tabuleiro, Linha, Coluna, 'X', NovoTabuleiro);
-   Simbolo =:= '#' -> print("Você já atirou nessa posição!");
-   Simbolo =:= 'X' -> print "Você já atirou nessa posição!" ).*/
+   tabuleiroExemplo(
+   [[~,~,n,n,n,n,~,~,~],
+    [~,~,n,n,~,~,~,~,~],
+    [~,~,~,~,~,n,~,~,~],
+    [~,~,~,~,~,n,~,~,~],
+    [~,~,~,~,~,~,~,~,~],
+    [~,~,~,~,~,n,~,~,~],
+    [~,~,n,~,~,~,n,~,~],
+    [~,~,~,~,~,~,~,~,~],
+    [~,~,~,~,~,~,~,~,n]] ).
+
+/* Regras para realizar tiros, manipulando o tabuleiro */
+atirar(Tabuleiro, Linha, Coluna, NovoTabuleiro) :-
+  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
+  (
+  (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro);
+  (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro);
+  (Simbolo == @) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.");
+  (Simbolo == n) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.")
+  ).
 
 encontraSimboloNaMatriz(Matriz, Linha, Coluna, Simbolo) :-
-  nth1(Linha, Matriz, ListaDaPos),
-  nth1(Coluna, ListaDaPos, Simbolo).
+  nth0(Linha, Matriz, ListaDaPos),
+  nth0(Coluna, ListaDaPos, Simbolo).
 
-/*alteraValor(Tabuleiro, Linha, Coluna, NovoValor, NovoTabuleiro) :-
-  */
+substituir([_|T], 0, X, [X|T]).
+substituir([H|T], Index, NewElement, [H|U]) :-
+  Index1 is Index - 1, substituir(T, Index1, NewElement, U).
 
-	   
+alteraValorNoTabuleiro([H|T], 0, Coluna, NovoValor, [J|T]) :- substituir(H, Coluna, NovoValor, J).
+alteraValorNoTabuleiro([H|T], Linha, Coluna, NovoValor, [H|U]) :-
+  Linha1 is Linha - 1, alteraValorNoTabuleiro(T, Linha1, Coluna, NovoValor, U).
 
-  
+
+/* Regras para exibição do tabuleiro na tela */
+
 imprimeTabuleiroReal(MatrizTabuleiro) :-
   print('~°~°  TABULEIRO REAL °~°~'),nl,
   print('   1   2   3   4   5   6   7   8   9'),nl,
@@ -38,16 +62,7 @@ imprimeLinha([H|T]) :-
   print(H), print(' '),
   imprimeLinha(T).
 
-  
-board([[0, 0, 0, 0, 0, 0, 0, 0, 0],
-       [1, 1, 0, 0, 0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-       [1, 1, 1, 1, 0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 0, 0, 0, 0, 1],
-	   [1, 1, 1, 1, 0, 0, 0, 0, 0],
-	   [1, 1, 1, 1, 0, 0, 0, 0, 0],
-	   [1, 1, 1, 1, 0, 0, 0, 0, 0],
-	   [1, 1, 1, 1, 0, 0, 0, 0, 0]]).
+/* - - - - - - - - - - - - - - - - - - - - - - -  */
 
 linhaAux(X, Row) :-
   board(Board),
@@ -67,24 +82,24 @@ acertar:-
 miss :-
     write('ERROU!'), nl.
 
-mira(X, Y, State) :-
+/*mira(X, Y, State) :-
   (posNavio(X, Y) ->
     acertar, atualizaTabuleiro(X,Y);
-    miss).
+    miss). */
 
 /*funcao pra atualizar o novo tabuleiro
-  */	
-  
-atualizaTabuleiro(TabuleiroVisto,TabuleiroComNavios PosX, PosY, NovoTabuleiroVisto).
-	
+  */
+
+/*atualizaTabuleiro(TabuleiroVisto,TabuleiroComNavios PosX, PosY, NovoTabuleiroVisto).*/
+
 prompt_number(Prompt, Number) :-
   write(Prompt),
   write(': '),
   read(Number).
 
-:- initialization(main).
+/*:- initialization(main).
 main :-
-  
+
   repeat,
   tabuleiroInicial(TABULEIRO),
   imprimeTabuleiroReal(TABULEIRO),
@@ -93,6 +108,5 @@ main :-
   mira(Row, Col, State),
   (posNavio(Row, Col) ->
     write('you won!'), nl, halt ;
-    write('Continue Tentando!'), nl, fail).  
-	
-	
+    write('Continue Tentando!'), nl, fail).
+*/
