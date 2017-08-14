@@ -1,15 +1,16 @@
 
 /* Regras para realizar tiros, manipulando o tabuleiro */
 
-atirar(Tabuleiro, Linha, Coluna, NovoTabuleiro) :-
+atirar(Tabuleiro, NovoTabuleiro) :-
+  selecione,
   prompt_number('Linha', Linha),
-  prompt_number('Coluna', Coluna),
+  prompt_number('Coluna', Coluna),nl,
  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
  (
- (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro), errou;
- (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro), acertou;
- (Simbolo == @) -> invalido, atirar(Tabuleiro, _, _, _);
- (Simbolo == x) -> invalido, atirar(Tabuleiro, _, _, _)
+ (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro), errou, nl;
+ (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro), acertou, nl;
+ (Simbolo == @) -> invalido, atirar(Tabuleiro, _);
+ (Simbolo == x) -> invalido, atirar(Tabuleiro, _)
  ).
 
 encontraSimboloNaMatriz(Matriz, Linha, Coluna, Simbolo) :-
@@ -50,7 +51,7 @@ imprimeTabuleiroJogador(Tabuleiro) :-
   write('   0   1   2   3   4   5   6   7   8'),nl,nl,
   imprimeMatrizJogador(Tabuleiro, 0),
   write('Legenda:'),nl,
-  write('~ = ÁGUA | @ = TIRO NA ÁGUA | x = TIRO EM NAVIO').
+  write('~ = ÁGUA | @ = TIRO NA ÁGUA | x = TIRO EM NAVIO'), nl, nl.
 
 imprimeMatrizJogador([], _).
 imprimeMatrizJogador([H|T], Index) :-
@@ -77,6 +78,12 @@ errou :-
 invalido :-
   write('Você já atirou aqui! Atire em outro lugar.'), nl.
 
+selecione :-
+  write('Selecione as coordenadas de onde deseja atirar!'), nl.
+
+misseis(Qtd) :-
+  write('Você ainda tem '), write(Qtd), write(' mísseis.'), nl, nl.
+
 /* Imprime uma mensagem na tela e lê um número da entrada */
 prompt_number(Prompt, Number) :-
   write(Prompt),
@@ -84,12 +91,19 @@ prompt_number(Prompt, Number) :-
   read(Number).
 
 
-/*
+/* Execução da lógica sequencial do jogo */
+jogar(Tabuleiro, Misseis, NovoTabuleiro, NovosMisseis) :-
+  Misseis > 0,
+  imprimeTabuleiroJogador(Tabuleiro),
+  atirar(Tabuleiro, NovoTabuleiro), NovosMisseis is Misseis-1,
+  misseis(NovosMisseis),
+  jogar(NovoTabuleiro, NovosMisseis, _, _).
+
+
 :- initialization(main).
 main :-
-  tabuleiro(X, 40),
-  imprimeTabuleiroReal(X).
-*/
+  jogar([[~,~,n,n,x,n,~,~,~],[~,~,n,n,~,~,~,~,~],[~,~,~,~,~,x,~,~,~],[~,@,~,~,~,n,~,@,~],[~,@,@,~,@,@,~,~,~],[~,~,~,~,~,n,~,~,~],[~,~,n,~,~,~,n,~,~],[~,@,@,@,~,~,@,~,~],[~,~,~,~,~,~,~,~,n]], 40, _, _).
+
 /*:- initialization(main).
 main :-
   repeat,
