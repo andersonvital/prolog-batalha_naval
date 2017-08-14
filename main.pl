@@ -1,12 +1,15 @@
 
 /* Regras para realizar tiros, manipulando o tabuleiro */
+
 atirar(Tabuleiro, Linha, Coluna, NovoTabuleiro) :-
+  prompt_number('Linha', Linha),
+  prompt_number('Coluna', Coluna),
  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
  (
- (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro);
- (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro);
- (Simbolo == @) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.");
- (Simbolo == x) -> print("Você já atirou nessa posição anteriormente! Atire em outro lugar.")
+ (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro), errou;
+ (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro), acertou;
+ (Simbolo == @) -> invalido, atirar(Tabuleiro, _, _, _);
+ (Simbolo == x) -> invalido, atirar(Tabuleiro, _, _, _)
  ).
 
 encontraSimboloNaMatriz(Matriz, Linha, Coluna, Simbolo) :-
@@ -26,7 +29,7 @@ alteraValorNoTabuleiro([H|T], Linha, Coluna, NovoValor, [H|U]) :-
 /* Impressão do tabuleiro exibindo os navios inimigos */
 
 imprimeTabuleiroReal(Tabuleiro) :-
-  write('~°~°~°~°  TABULEIRO REAL ~°~°°~°~'),nl,nl,
+  write('~°~°~°~°~  TABULEIRO REAL ~°~°~°~°~'),nl,nl,
   write('   0   1   2   3   4   5   6   7   8'),nl,nl,
   imprimeLinhas(Tabuleiro, 0).
 
@@ -43,9 +46,11 @@ imprimeLinha([H|T]) :-
 
   /* Impressão da exibição que o jogador tem do tabuleiro, omitindo navios */
 imprimeTabuleiroJogador(Tabuleiro) :-
-  write('~°~°~°~°~°~°  TABULEIRO ~°~°~°~°~°~°'),nl,nl,
+  write('~°~°~°~°~°~° TABULEIRO ~°~°~°~°~°~°~'),nl,nl,
   write('   0   1   2   3   4   5   6   7   8'),nl,nl,
-  imprimeMatrizJogador(Tabuleiro, 0).
+  imprimeMatrizJogador(Tabuleiro, 0),
+  write('Legenda:'),nl,
+  write('~ = ÁGUA | @ = TIRO NA ÁGUA | x = TIRO EM NAVIO').
 
 imprimeMatrizJogador([], _).
 imprimeMatrizJogador([H|T], Index) :-
@@ -61,24 +66,30 @@ imprimeLinhaJogador([H|T]) :-
   H == x, write('x')), write('   '),
   imprimeLinhaJogador(T).
 
-/* - - - - - - - - - - - - - - - - - - - - - - -  */
+/* Impressões simples */
 
-acertar:-
-    write('ACERTOU!'), nl.
+acertou :-
+  write('ACERTOU!'), nl.
 
-miss :-
-    write('ERROU!'), nl.
+errou :-
+  write('ERROU!'), nl.
 
-/*mira(X, Y, State) :-
-  (posNavio(X, Y) ->
-    acertar, atualizaTabuleiro(X,Y);
-    miss). */
+invalido :-
+  write('Você já atirou aqui! Atire em outro lugar.'), nl.
 
+/* Imprime uma mensagem na tela e lê um número da entrada */
 prompt_number(Prompt, Number) :-
   write(Prompt),
   write(': '),
   read(Number).
 
+
+/*
+:- initialization(main).
+main :-
+  tabuleiro(X, 40),
+  imprimeTabuleiroReal(X).
+*/
 /*:- initialization(main).
 main :-
   repeat,
