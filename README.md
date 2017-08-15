@@ -10,7 +10,7 @@ destruído, cabe ao mesmo verificar isso realizando tiros nos extremos de onde e
 estar posicionado o navio. O jogador vence caso o consiga destruir todos os navios antes
 do fim da sua munição.
 
-Existem 3 tipos de navios: BattleShip(4 casas)- 1 unidade; Cruiser (2 casas) - 2 unidades; 
+Existem 3 tipos de navios: Battleship (4 casas)- 1 unidade; Cruiser (2 casas) - 2 unidades; 
 e MineSweeper(1 casa) - 4 unidades. A distribuição desses navios é feita de forma aleatória.
 
 © Copyright 2017 Anderson Dalbert, Lucas Salvino.
