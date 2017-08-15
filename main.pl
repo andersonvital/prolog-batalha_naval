@@ -3,8 +3,8 @@
 
 atirar(Tabuleiro, NovoTabuleiro) :-
   selecione,
-  prompt_number('Linha', Linha),
-  prompt_number('Coluna', Coluna),nl,
+  inserir_numero('Linha', Linha),
+  inserir_numero('Coluna', Coluna), nl,
  encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
  (
  (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro), errou, nl;
@@ -29,6 +29,7 @@ substituir([H|T], Index, NewElement, [H|U]) :-
 /* EXIBIÇÃO */
 
 /* Impressão da visão que o jogador tem do tabuleiro, omitindo navios */
+
 imprimeTabuleiroJogador(Tabuleiro) :-
   write('~°~°~°~°~°~° TABULEIRO ~°~°~°~°~°~°~'),nl,nl,
   write('   0   1   2   3   4   5   6   7   8'),nl,nl,
@@ -95,7 +96,7 @@ misseisEsgotados :-
 
 gameOver :-
   write('---------------------------------------------------'), nl,
-  write('Você não conseguiu afundar toda a frota inimiga :-( Game Over!'),
+  write('Você não conseguiu afundar toda a frota inimiga :-( Game Over!'), nl,
   write('---------------------------------------------------').
 
 vitoria :-
@@ -104,10 +105,10 @@ vitoria :-
   write('---------------------------------------------------').
 
 /* Imprime uma mensagem na tela e lê um número da entrada */
-prompt_number(Prompt, Number) :-
+inserir_numero(Prompt, Numero) :-
   write(Prompt),
   write(': '),
-  read(Number).
+  read(Numero).
 
 
 /* Funções que verificam a existência de elementos em listas e matriz */
@@ -119,26 +120,15 @@ contem([_|T], X) :-
 existemNavios([H|_]) :- contem(H, n).
 existemNavios([_|T]) :- existemNavios(T).
 
-
-/* Execução da lógica sequencial do jogo */
-jogar(Tabuleiro, Misseis, NovoTabuleiro, NovosMisseis) :-
-  Misseis > 0,
-  imprimeTabuleiroJogador(Tabuleiro),
-  atirar(Tabuleiro, NovoTabuleiro), NovosMisseis is Misseis-1,
-  (
-  not( existemNavios(NovoTabuleiro) ) -> vitoria;
-  (NovosMisseis > 1 -> misseis(NovosMisseis), jogar(NovoTabuleiro, NovosMisseis, _, _);
-  NovosMisseis =:= 1 -> ultimoMissel, jogar(NovoTabuleiro, NovosMisseis, _, _);
-  NovosMisseis =:= 0 -> misseisEsgotados, imprimeTabuleiroReal(NovoTabuleiro), gameOver)
-  ).
+/* Funções de inserção de Navios no tabuleiro */
 
 inserirBattleShip(Tabuleiro, NovoTabuleiro):-
     random(0,6,Linha),random(0,6,Coluna),random(0,2,Orientacao),
-    encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),Coluna2 is Coluna+1,Coluna3 is Coluna+2,Coluna4 is Coluna+3, Linha2 is Linha+1,Linha3 is Linha+2,Linha4 is Linha+3,
+    encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, _),Coluna2 is Coluna+1,Coluna3 is Coluna+2,Coluna4 is Coluna+3, Linha2 is Linha+1,Linha3 is Linha+2,Linha4 is Linha+3,
  (
  (Orientacao == 0) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha, Coluna2, n, Tabuleiro3),alteraValorNoTabuleiro(Tabuleiro3, Linha, Coluna3, n, Tabuleiro4),alteraValorNoTabuleiro(Tabuleiro4, Linha, Coluna4, n, NovoTabuleiro);
  (Orientacao == 1) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha2, Coluna, n, Tabuleiro3),alteraValorNoTabuleiro(Tabuleiro3, Linha3, Coluna, n, Tabuleiro4),alteraValorNoTabuleiro(Tabuleiro4, Linha4, Coluna, n, NovoTabuleiro)
- 
+
  ).
 
 inserirCruiser(Tabuleiro, NovoTabuleiro):-
@@ -149,7 +139,7 @@ inserirCruiser(Tabuleiro, NovoTabuleiro):-
  (Simbolo == ~), (Simbolo3 == ~), (Orientacao == 1) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha2, Coluna, n, NovoTabuleiro);
  (Orientacao == 0),((Simbolo == n);(Simbolo2 == n))-> inserirCruiser(Tabuleiro, NovoTabuleiro);
  (Orientacao == 1),((Simbolo == n);(Simbolo3 == n))-> inserirCruiser(Tabuleiro, NovoTabuleiro)
- 
+
  ).
 
 inserirMinesweeper(Tabuleiro, NovoTabuleiro):-random(0,9,Linha),random(0,9,Coluna),
@@ -158,22 +148,34 @@ inserirMinesweeper(Tabuleiro, NovoTabuleiro):-random(0,9,Linha),random(0,9,Colun
  (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, NovoTabuleiro);
  (Simbolo == n) -> inserirMinesweeper(Tabuleiro, NovoTabuleiro)
  ).
-	
-	
+
 gerarTabuleiro([[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~]]).
 
 inserirNavios(Tabuleiro, NovoTabuleiro):-
     inserirBattleShip(Tabuleiro, Tabuleiro2),
 	inserirCruiser(Tabuleiro2, Tabuleiro3),
 	inserirCruiser(Tabuleiro3, Tabuleiro4),
-	inserirMinesweeper(Tabuleiro4, Tabuleiro5), 
+	inserirMinesweeper(Tabuleiro4, Tabuleiro5),
 	inserirMinesweeper(Tabuleiro5, Tabuleiro6),
 	inserirMinesweeper(Tabuleiro6, Tabuleiro7),
 	inserirMinesweeper(Tabuleiro7, NovoTabuleiro).
-	
+
+
+/* Execução da lógica sequencial do jogo */
+jogar(Tabuleiro, Misseis) :-
+  Misseis > 0,
+  imprimeTabuleiroJogador(Tabuleiro),
+  atirar(Tabuleiro, NovoTabuleiro), NovosMisseis is Misseis-1,
+  (
+  not( existemNavios(NovoTabuleiro) ) -> imprimeTabuleiroReal(NovoTabuleiro), vitoria;
+  (NovosMisseis > 1 -> misseis(NovosMisseis), jogar(NovoTabuleiro, NovosMisseis);
+  NovosMisseis =:= 1 -> ultimoMissel, jogar(NovoTabuleiro, NovosMisseis);
+  NovosMisseis =:= 0 -> misseisEsgotados, imprimeTabuleiroReal(NovoTabuleiro), gameOver)
+  ).
 
 /* Execução do programa */
 :- initialization(main).
 main :-
-  gerarTabuleiro(TabuleiroRamdomicoAux),inserirNavios(TabuleiroRamdomicoAux, TabuleiroRamdomico),jogar(TabuleiroRamdomico,
-  40, _, _).
+  gerarTabuleiro(TabuleiroRamdomicoAux),
+  inserirNavios(TabuleiroRamdomicoAux, TabuleiroRamdomico),
+  jogar(TabuleiroRamdomico, 40).
