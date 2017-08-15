@@ -1,3 +1,6 @@
+/* Batalha Naval
+© Copyright 2017 Anderson Dalbert, Lucas Salvino.
+Distribuído sobre os termos da Licença Pública Geral GNU.  */
 
 /* Regras para realizar tiros, manipulando o tabuleiro */
 
@@ -102,7 +105,7 @@ misseisEsgotados :-
 
 gameOver :-
   write('---------------------------------------------------'), nl,
-  write('Você não conseguiu afundar toda a frota inimiga :-( Game Over!'), nl,
+  write('Seus mísseis acabaram e você não conseguiu afundar toda a frota inimiga :-( Game Over!'), nl,
   write('---------------------------------------------------').
 
 vitoria :-
