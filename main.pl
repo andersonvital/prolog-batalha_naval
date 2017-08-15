@@ -5,13 +5,16 @@ atirar(Tabuleiro, NovoTabuleiro) :-
   selecione,
   inserir_numero('Linha', Linha),
   inserir_numero('Coluna', Coluna), nl,
- encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
- (
- (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro), errou, nl;
- (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro), acertou, nl;
- (Simbolo == @) -> invalido, atirar(Tabuleiro, _);
- (Simbolo == x) -> invalido, atirar(Tabuleiro, _)
- ).
+  (Linha >= 0, Linha =< 8, Coluna >= 0, Coluna =< 8 ->
+    encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
+    (
+    (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, @, NovoTabuleiro), errou, nl;
+    (Simbolo == n) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, x, NovoTabuleiro), acertou, nl;
+    (Simbolo == @) -> invalido, atirar(Tabuleiro, NovoTabuleiro);
+    (Simbolo == x) -> invalido, atirar(Tabuleiro, NovoTabuleiro)
+    );
+  selecaoInvalida, atirar(Tabuleiro, NovoTabuleiro)
+  ).
 
  alteraValorNoTabuleiro([H|T], 0, Coluna, NovoValor, [J|T]) :- substituir(H, Coluna, NovoValor, J).
  alteraValorNoTabuleiro([H|T], Linha, Coluna, NovoValor, [H|U]) :-
@@ -84,6 +87,9 @@ invalido :-
 
 selecione :-
   write('Selecione as coordenadas de onde deseja atirar!'), nl.
+
+selecaoInvalida :-
+  write('Coordenadas inválidas. Tente novamente.'), nl.
 
 misseis(Qtd) :-
   write('Você ainda tem '), write(Qtd), write(' mísseis.'), nl, nl.
