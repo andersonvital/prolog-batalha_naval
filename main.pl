@@ -132,9 +132,48 @@ jogar(Tabuleiro, Misseis, NovoTabuleiro, NovosMisseis) :-
   NovosMisseis =:= 0 -> misseisEsgotados, imprimeTabuleiroReal(NovoTabuleiro), gameOver)
   ).
 
+inserirBattleShip(Tabuleiro, NovoTabuleiro):-
+    random(0,6,Linha),random(0,6,Coluna),random(0,2,Orientacao),
+    encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),Coluna2 is Coluna+1,Coluna3 is Coluna+2,Coluna4 is Coluna+3, Linha2 is Linha+1,Linha3 is Linha+2,Linha4 is Linha+3,
+ (
+ (Orientacao == 0) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha, Coluna2, n, Tabuleiro3),alteraValorNoTabuleiro(Tabuleiro3, Linha, Coluna3, n, Tabuleiro4),alteraValorNoTabuleiro(Tabuleiro4, Linha, Coluna4, n, NovoTabuleiro);
+ (Orientacao == 1) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha2, Coluna, n, Tabuleiro3),alteraValorNoTabuleiro(Tabuleiro3, Linha3, Coluna, n, Tabuleiro4),alteraValorNoTabuleiro(Tabuleiro4, Linha4, Coluna, n, NovoTabuleiro)
+ 
+ ).
+
+inserirCruiser(Tabuleiro, NovoTabuleiro):-
+    random(0,8,Linha),random(0,8,Coluna),random(0,2,Orientacao),
+    encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),Coluna2 is Coluna+1, Linha2 is Linha+1, encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna2, Simbolo2),encontraSimboloNaMatriz(Tabuleiro, Linha2, Coluna, Simbolo3),
+ (
+ (Simbolo == ~), (Simbolo2 == ~), (Orientacao == 0) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha, Coluna2, n, NovoTabuleiro);
+ (Simbolo == ~), (Simbolo3 == ~), (Orientacao == 1) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, Tabuleiro2),alteraValorNoTabuleiro(Tabuleiro2, Linha2, Coluna, n, NovoTabuleiro);
+ (Orientacao == 0),((Simbolo == n);(Simbolo2 == n))-> inserirCruiser(Tabuleiro, NovoTabuleiro);
+ (Orientacao == 1),((Simbolo == n);(Simbolo3 == n))-> inserirCruiser(Tabuleiro, NovoTabuleiro)
+ 
+ ).
+
+inserirMinesweeper(Tabuleiro, NovoTabuleiro):-random(0,9,Linha),random(0,9,Coluna),
+    encontraSimboloNaMatriz(Tabuleiro, Linha, Coluna, Simbolo),
+ (
+ (Simbolo == ~) -> alteraValorNoTabuleiro(Tabuleiro, Linha, Coluna, n, NovoTabuleiro);
+ (Simbolo == n) -> inserirMinesweeper(Tabuleiro, NovoTabuleiro)
+ ).
+	
+	
+gerarTabuleiro([[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,~]]).
+
+inserirNavios(Tabuleiro, NovoTabuleiro):-
+    inserirBattleShip(Tabuleiro, Tabuleiro2),
+	inserirCruiser(Tabuleiro2, Tabuleiro3),
+	inserirCruiser(Tabuleiro3, Tabuleiro4),
+	inserirMinesweeper(Tabuleiro4, Tabuleiro5), 
+	inserirMinesweeper(Tabuleiro5, Tabuleiro6),
+	inserirMinesweeper(Tabuleiro6, Tabuleiro7),
+	inserirMinesweeper(Tabuleiro7, NovoTabuleiro).
+	
 
 /* Execução do programa */
 :- initialization(main).
 main :-
-  jogar([[~,~,n,n,n,n,~,~,~],[~,~,n,n,~,~,~,~,~],[~,~,~,~,~,n,~,~,~],[~,~,~,~,~,n,~,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,n,~,~,~],[~,~,n,~,~,~,n,~,~],[~,~,~,~,~,~,~,~,~],[~,~,~,~,~,~,~,~,n]],
+  gerarTabuleiro(TabuleiroRamdomicoAux),inserirNavios(TabuleiroRamdomicoAux, TabuleiroRamdomico),jogar(TabuleiroRamdomico,
   40, _, _).
